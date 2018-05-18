@@ -35,7 +35,10 @@ connect相对而言会复杂一点，可分为三块:
 * [selector](#selector)
 * [connectHoc](#connectHoc)
 #### match
-match函数的作用主要预处理mapDispatchToProps、mapStateToProps、mergeProps这三个函数
+match函数的作用主要预处理mapDispatchToProps、mapStateToProps、mergeProps这三个函数 
+预处理主要做了两件事：
+* 如果参数未定义，则赋予默认值
+* 如果参数为函数，则在外面包装一层函数，决定是否传入ownProps
 ```jsx
 
 function match(arg, factories, name) {
@@ -62,15 +65,23 @@ export function createConnect({
     ...
   }
 }
-```
-接下来以mapStateToProps为代表来看下matach究竟是如何来预处理这些方法的。
-用户传入的函数首先会被传入mapStateToPropsFactories,通过判断传入的mapStateToProps来执行不同的操作，
-* 若是函数，执行whenMapStateToPropsIsFunction，返回一个包含mapStateToProps的代理函数
-* 若是undefinded，则赋予默认值
+``` 
+### selector
+预处理完用户传入的参数后，变可以进行下一步骤了,
+selsector的作用是调用mapDispatchToProps、mapStateToProps两个个参数，并通过mergeProps将三个方法的结果合并
 ```jsx
-export default [
-  whenMapStateToPropsIsFunction,
-  whenMapStateToPropsIsMissing
-]
+...
+
+function handleNewPropsAndNewState() {
+  stateProps = mapStateToProps(state, ownProps)
+
+  if (mapDispatchToProps.dependsOnOwnProps)
+    dispatchProps = mapDispatchToProps(dispatch, ownProps)
+
+  mergedProps = mergeProps(stateProps, dispatchProps, ownProps)
+  return mergedProps
+}
+...
 ```
-赋予默认值比较简单，接下来我们来继续深入whenMapStateToPropsIsFunction
+### connectHoc
+终于到最核心的connectHoc了。
