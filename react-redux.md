@@ -1,7 +1,7 @@
 # [react-redux](https://github.com/reduxjs/react-redux)源码分析 
 
 ## 目录
-[Provider](#Povider)
+[Provider](#Povider) 
 [connect](#connect)
 - [match](#match)
 - [selector](#selector)
