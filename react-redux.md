@@ -27,6 +27,11 @@ class Provider extends Component {
   render() {
     return Children.only(this.props.children)
   }
+
+  Provider.childContextTypes = {
+    [storeKey]: storeShape.isRequired,
+    [subscriptionKey]: subscriptionShape,
+  }
 }
 ```
 ### connect
@@ -68,7 +73,7 @@ export function createConnect({
 ``` 
 ### selector
 预处理完用户传入的参数后，变可以进行下一步骤了,
-selsector的作用是调用mapDispatchToProps、mapStateToProps两个个参数，并通过mergeProps将三个方法的结果合并
+selsector的作用是调用mapDispatchToProps、mapStateToProps两个个参数，并通过mergeProps将两个方法的结果合并
 ```jsx
 ...
 
@@ -85,3 +90,6 @@ function handleNewPropsAndNewState() {
 ```
 ### connectHoc
 终于到最核心的connectHoc了。
+connectHoc主要做了两件事
+* 获取store
+* 监听变化，并传递props
