@@ -1,21 +1,29 @@
 import React from 'react';
 import { connect } from 'dva';
 import styles from './IndexPage.css';
-
-function IndexPage() {
-  return (
-    <div className={styles.normal}>
-      <h1 className={styles.title}>Yay! Welcome to dva!</h1>
-      <div className={styles.welcome} />
-      <ul className={styles.list}>
-        <li>To get started, edit <code>src/index.js</code> and save to reload.</li>
-        <li><a href="https://github.com/dvajs/dva-docs/blob/master/v1/en-us/getting-started.md">Getting Started</a></li>
-      </ul>
-    </div>
-  );
+import Count from './Count'
+let i = 0
+class IndexPage extends React.Component {
+  onClick = () => {
+    this.props.dispatch({
+      type: 'example/add'
+    })
+  }
+  render(){
+    console.log('From Parent', ++i)
+    return (
+      <div className={styles.normal}>
+        <button
+          onClick={this.onClick}
+        >
+          点我{this.props.example.count}
+        </button>
+        <Count count={this.props.example.count}></Count>
+      </div>
+    );
+  }
 }
 
-IndexPage.propTypes = {
-};
-
-export default connect()(IndexPage);
+export default connect(state => ({
+  example: state.example
+}))(IndexPage);

@@ -3,12 +3,10 @@ export default {
 
   namespace: 'example',
 
-  state: {},
-
-  subscriptions: {
-    setup({ dispatch, history }) {  // eslint-disable-line
-    },
+  state: {
+    count: 0
   },
+
 
   effects: {
     *fetch({ payload }, { call, put }) {  // eslint-disable-line
@@ -17,8 +15,8 @@ export default {
   },
 
   reducers: {
-    save(state, action) {
-      return { ...state, ...action.payload };
+    add(state, action) {
+      return { ...state, count: ++state.count};
     },
   },
 
