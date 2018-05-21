@@ -93,3 +93,28 @@ function handleNewPropsAndNewState() {
 connectHoc主要做了两件事
 * 获取store
 * 监听变化，并传递props
+```jsx
+function makeSelectorStateful(sourceSelector, store) {
+  const selector = {
+    run: function runComponentSelector(props) {
+      try {
+        const nextProps = sourceSelector(store.getState(), props)
+        if (nextProps !== selector.props || selector.error) {
+          selector.shouldComponentUpdate = true
+          selector.props = nextProps
+          selector.error = null
+        }
+      } catch (error) {
+        selector.shouldComponentUpdate = true
+        selector.error = error
+      }
+    }
+  }
+
+  return selector
+}
+  componentWillReceiveProps(nextProps) {
+    this.selector.run(nextProps)
+  }
+
+```

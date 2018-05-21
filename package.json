@@ -1,0 +1,26 @@
+{
+  "name": "git-blog",
+  "version": "1.0.0",
+  "description": "* [react-redux源码分析](https://github.com/luke93h/git-blog/blob/master/react-redux.md)",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luke93h/git-blog.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/luke93h/git-blog/issues"
+  },
+  "homepage": "https://github.com/luke93h/git-blog#readme",
+  "dependencies": {
+    "create-react-app": "^1.5.2"
+  }
+}
