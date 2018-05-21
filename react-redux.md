@@ -1,12 +1,11 @@
 # [react-redux](https://github.com/reduxjs/react-redux)源码分析 
 
 ## 目录
-[Provider](#Povider) 
-
-[connect](#connect)
-- [match](#match)
-- [selector](#selector)
-- [connectHoc](#connectHoc)
+- [Provider](#Povider)  
+- [connect](#connect)
+  - [match](#match)
+  - [selector](#selector)
+  - [connectHoc](#connectHoc)
 ### Povider
 Provider源码比较简单，功能也比较明了：
 * 获取store，并在react的context中保存store
