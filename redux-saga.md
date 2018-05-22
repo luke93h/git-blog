@@ -10,6 +10,10 @@
     - [next](#next)
     - [digestEffect](#digestEffect)
     - [runEffect](#runEffect)
+        - [resolveIterator](#resolveIterator)
+        - [runTakeEffect](#runTakeEffect)
+        - [runPutEffect](#runPutEffect)
+        - [runCallEffect](#runCallEffect)
 ## Middleware  
 > redux-saga作为redux的中间件，所以我们从它的入口作为起点来开始分析
 ```jsx
@@ -161,6 +165,7 @@ function digestEffect(effect, parentEffectId, label = '', cb) {
 ```
 ### runEffect
 > 根据effect类型的不同，选择对应的执行方式
+> is的作用是判断类型，asEffect有两个作用：1、判断是否是对应的effect。2、解析对应的数据类型，并返回数据
 ```jsx
 function runEffect(effect, effectId, currCb) {
     let data
@@ -188,4 +193,129 @@ function runEffect(effect, effectId, currCb) {
       : /* anything else returned as is */        currCb(effect)
     )
   }
+```
+#### resolveIterator
+> 处理类型为iterator的effect
+```jsx
+// 直接通过proc，执行嵌套的iterator
+function resolveIterator(iterator, effectId, meta, cb) {
+  proc(iterator, stdChannel, dispatch, getState, taskContext, options, effectId, meta, cb)
+}
+```
+#### runTakeEffect
+> 处理类型为take的effect，用于监听
+```jsx
+function runTakeEffect({ channel = stdChannel, pattern, maybe }, cb) {
+  // 在回调函数外面包一层proxy
+  const takeCb = input => {
+    if (input instanceof Error) {
+      cb(input, true)
+      return
+    }
+    if (isEnd(input) && !maybe) {
+      cb(CHANNEL_END)
+      return
+    }
+    cb(input)
+  }
+  // 把监听函数存储在channel中，等待被唤醒
+  try {
+    channel.take(takeCb, is.notUndef(pattern) ? matcher(pattern) : null)
+  } catch (err) {
+    cb(err, true)
+    return
+  }
+  cb.cancel = takeCb.cancel
+}
+```
+#### runPutEffect
+> 处理类型为put的effect，用于消耗监听函数
+```jsx
+function runPutEffect({ channel, action, resolve }, cb) {
+  // 所有的put需要经由asap，以便控制流程
+  asap(() => {
+    let result
+    try {
+      // 执行channel中的put，消耗对应的监听函数，正常情况下，不会动用channel，会直接dispatch
+      // 此处的dispatch也是经过包装的，并不是直接store.dispatch，详情见下方
+      result = (channel ? channel.put : dispatch)(action)
+    } catch (error) {
+      cb(error, true)
+      return
+    }
+
+    if (resolve && is.promise(result)) {
+      resolvePromise(result, cb)
+    } else {
+      cb(result)
+      return
+    }
+  })
+}
+```
+```jsx
+// 通过put触发的dispatch，会带有标记，说明已经在队列中排过了，不需要再等待
+wrapSagaDispatch = dispatch => action =>
+  dispatch(Object.defineProperty(action, SAGA_ACTION, { value: true }))
+  ...
+  dipatch = wrapSagaDispatch(dispatch)
+```
+#### runFork
+> 处理fork类型的effect，执行嵌套的子任务
+```jsx
+  function runForkEffect({ context, fn, args, detached }, effectId, cb) {
+    const taskIterator = createTaskIterator({ context, fn, args })
+    const meta = getIteratorMetaInfo(taskIterator, fn)
+    try {
+      // 标记，暂停消耗监听函数
+      // 注意，此处task的执行并不是完全阻塞的，当task里面遇到put时，会将put先保存起来，然后继续执行下去
+      suspend()
+      const task = proc(
+        taskIterator,
+        stdChannel,
+        dispatch,
+        getState,
+        taskContext,
+        options,
+        effectId,
+        meta,
+        detached ? null : noop,
+      )
+
+      if (detached) {
+        cb(task)
+      } else {
+        if (taskIterator._isRunning) {
+          taskQueue.addTask(task)
+          // 继续执行当前任务
+          cb(task)
+        } else if (taskIterator._error) {
+          taskQueue.abort(taskIterator._error)
+        } else {
+          cb(task)
+        }
+      }
+    } finally {
+      // 释放监听锁
+      flush()
+    }
+    // Fork effects are non cancellables
+  }
+```
+#### runCallEffect
+> 处理类型为call的effect，比较简单，可直接看源码
+```jsx
+function runCallEffect({ context, fn, args }, effectId, cb) {
+  let result
+  // catch synchronous failures; see #152
+  try {
+    result = fn.apply(context, args)
+  } catch (error) {
+    cb(error, true)
+    return
+  }
+  return is.promise(result)
+    ? resolvePromise(result, cb)
+    : is.iterator(result) ? resolveIterator(result, effectId, getMetaInfo(fn), cb) : cb(result)
+}
 ```
