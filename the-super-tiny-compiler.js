@@ -111,30 +111,24 @@
  * 解析
  * -------
  *
- * Parsing typically gets broken down into two phases: Lexical Analysis and
- * Syntactic Analysis.
+ * 解析可以分解为两个步骤：词汇分析、语法分析
+ * 
+ * 1. 词汇分析：通过一个词法分析器（tokenizer），原始的代码可以被分解进tokens
+ * 
+ *    Tokens是一个数组，里面有各种描述语法特征的小对象。它们可以是数字，标签，标点符号，
+ *    运算符或者其他任何东西。
  *
- * 1. *Lexical Analysis* takes the raw code and splits it apart into these things
- *    called tokens by a thing called a tokenizer (or lexer).
+ * 2. 语法分析：接受tokens，并将它们转化为一种可以描述语法和相互之间的关系的呈现方式。
+ *    这通常被称为中间表达或者抽象语法树（AST）。
  *
- *    Tokens are an array of tiny little objects that describe an isolated piece
- *    of the syntax. They could be numbers, labels, punctuation, operators,
- *    whatever.
- *
- * 2. *Syntactic Analysis* takes the tokens and reformats them into a
- *    representation that describes each part of the syntax and their relation
- *    to one another. This is known as an intermediate representation or
- *    Abstract Syntax Tree.
- *
- *    An Abstract Syntax Tree, or AST for short, is a deeply nested object that
- *    represents code in a way that is both easy to work with and tells us a lot
- *    of information.
- *
- * For the following syntax:
+ *    抽象语法树，是一个嵌套很深的对象，这是一种比较容易呈现代码的方式，并且能告诉我们很多
+ *    信息。
+ * 
+ * 转换下面这样的语法：
  *
  *   (add 2 (subtract 4 2))
  *
- * Tokens might look something like this:
+ * Tokens 会是如此:
  *
  *   [
  *     { type: 'paren',  value: '('        },
@@ -148,7 +142,7 @@
  *     { type: 'paren',  value: ')'        },
  *   ]
  *
- * And an Abstract Syntax Tree (AST) might look like this:
+ * 抽象语法树会是如此：
  *
  *   {
  *     type: 'Program',
