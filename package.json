@@ -1,7 +1,7 @@
 {
   "name": "git-blog",
   "version": "1.0.0",
-  "description": "* [react-redux源码分析](https://github.com/luke93h/git-blog/blob/master/react-redux.md)",
+  "description": "luke-blog",
   "main": "index.js",
   "directories": {
     "test": "test"
