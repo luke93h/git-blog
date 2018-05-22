@@ -5,6 +5,11 @@
 - [Middleware](#Middleware)  
 - [channel](#channel)
 - [asap](#asap)  
+- [runSata](#runSaga)
+- [proc](#proc)
+    - [next](#next)
+    - [digestEffect](#digestEffect)
+    - [runEffect](#runEffect)
 ## Middleware  
 > redux-saga作为redux的中间件，所以我们从它的入口作为起点来开始分析
 ```jsx
@@ -84,3 +89,103 @@ function multicastChannel() {
 ```
 ## asap
 > asap用于控制流程，确保redux-saga一次只执行一次流程，流程控制可以说是redux-saga中最难理解的一个点
+> 该函数主要是针对put和fork，确保子任务和父任务的执行顺序，源码比较简单，难点在使用时的逻辑
+> 源码注释已经比较详细了，如果兴趣，可访问[scheduler.js](https://github.com/redux-saga/redux-saga/blob/master/packages/core/src/internal/scheduler.js)
+## runSaga
+> runSaga一般用于注册监听函数，是saga执行任务的起点
+```jsx
+export function runSaga(options, saga, ...args) {
+  // 获得对应的generator的遍历器
+  const iterator = saga(...args)
+  // saga的中间件，和redux中间件类似
+  const middleware = effectMiddlewares && compose(...effectMiddlewares)
+  // 执行iterator的逻辑位于proc中
+  const task = proc(
+    ...
+  )
+
+  return task
+}
+```
+## proc
+> proc用于遍历对应的generator生成iterator（遍历器）
+> proc源码很长，这里会挑几个关键性的地方来讲解
+### next
+> 用于遍历iterator
+```jsx
+  function next(arg, isErr) {
+    try {
+      let result = iterator.next(arg)
+      if (!result.done) {
+        // 将获得的saga指令派发给对应的执行函数，详解见下方
+        digestEffect(result.value, parentEffectId, '', next)
+      } else {
+        // 遍历完成，关闭任务
+        mainTask.isMainRunning = false
+        mainTask.cont && mainTask.cont(result.value)
+      }
+    } catch (error) {
+      if (mainTask.isCancelled) {
+        logError(error)
+      }
+      mainTask.isMainRunning = false
+      mainTask.cont(error, true)
+    }
+  }
+```
+### digestEffect
+> 生成用于下次执行的回调函数，并在执行saga的任务逻辑前，做些准备
+```jsx
+function digestEffect(effect, parentEffectId, label = '', cb) {
+    const effectId = nextEffectId()
+
+    let effectSettled
+    // 在下次next前，封装了一些额外的功能
+    function currCb(res, isErr) {
+      ...
+      cb(res, isErr)
+    }
+    currCb.cancel = noop
+    // 用于关闭回调的执行
+    cb.cancel = () => {
+      ...
+    }
+    // saga中间件相关逻辑，很少用到，不深究
+    if (is.func(middleware)) {
+      middleware(eff => runEffect(eff, effectId, currCb))(effect)
+      return
+    }
+    // 执行effect逻辑
+    runEffect(effect, effectId, currCb)
+  }
+```
+### runEffect
+> 根据effect类型的不同，选择对应的执行方式
+```jsx
+function runEffect(effect, effectId, currCb) {
+    let data
+    return (
+      /**
+        判断effect的类别，一共有17种类别，接下去分析下iterator、take、put、call作为代表
+      **/
+        is.promise(effect)                      ? resolvePromise(effect, currCb)
+      : is.iterator(effect)                     ? resolveIterator(effect, effectId, meta, currCb)
+      : (data = asEffect.take(effect))          ? runTakeEffect(data, currCb)
+      : (data = asEffect.put(effect))           ? runPutEffect(data, currCb)
+      : (data = asEffect.all(effect))           ? runAllEffect(data, effectId, currCb)
+      : (data = asEffect.race(effect))          ? runRaceEffect(data, effectId, currCb)
+      : (data = asEffect.call(effect))          ? runCallEffect(data, effectId, currCb)
+      : (data = asEffect.cps(effect))           ? runCPSEffect(data, currCb)
+      : (data = asEffect.fork(effect))          ? runForkEffect(data, effectId, currCb)
+      : (data = asEffect.join(effect))          ? runJoinEffect(data, currCb)
+      : (data = asEffect.cancel(effect))        ? runCancelEffect(data, currCb)
+      : (data = asEffect.select(effect))        ? runSelectEffect(data, currCb)
+      : (data = asEffect.actionChannel(effect)) ? runChannelEffect(data, currCb)
+      : (data = asEffect.flush(effect))         ? runFlushEffect(data, currCb)
+      : (data = asEffect.cancelled(effect))     ? runCancelledEffect(data, currCb)
+      : (data = asEffect.getContext(effect))    ? runGetContextEffect(data, currCb)
+      : (data = asEffect.setContext(effect))    ? runSetContextEffect(data, currCb)
+      : /* anything else returned as is */        currCb(effect)
+    )
+  }
+```
