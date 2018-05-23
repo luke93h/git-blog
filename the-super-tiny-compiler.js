@@ -304,37 +304,29 @@
  * ---------------
  *
  * 编译器的最后一个阶段是生成代码。有时候编译器会做些和转化阶段重复的事情，但是大多数的
- * 代码生成还是在AST阶段的
- * The final phase of a compiler is code generation. Sometimes compilers will do
- * things that overlap with transformation, but for the most part code
- * generation just means take our AST and string-ify code back out.
+ * 代码生成还是在AST阶段的。
  *
- * Code generators work several different ways, some compilers will reuse the
- * tokens from earlier, others will have created a separate representation of
- * the code so that they can print node linearly, but from what I can tell most
- * will use the same AST we just created, which is what we’re going to focus on.
+ * 代码生成步骤用好几种实现方式，有一些编译器会重复利用之前的tokens，其它的则会生成
+ * 一套独立的代码表达方式，从而它们能够线性生成代码，但是我能确定的是，大多数会使用
+ * 我们刚刚生成的AST，这也是我们接下来要用到的。
  *
- * Effectively our code generator will know how to “print” all of the different
- * node types of the AST, and it will recursively call itself to print nested
- * nodes until everything is printed into one long string of code.
+ * 我们的代码生成器会有效的知道如何“打印”各种不同类型的AST节点，并且它会递归调用自己去
+ * 打印嵌套的节点，知道所有的代码被打印成一串很长的字符串。
  */
 
 /**
- * And that's it! That's all the different pieces of a compiler.
+ * 这就是它了！那已经是编译器里面所有的不同点了。
  *
- * Now that isn’t to say every compiler looks exactly like I described here.
- * Compilers serve many different purposes, and they might need more steps than
- * I have detailed.
+ * 现在还不能说所有的编译器的工作原理就像是我所描述的这样。
+ * 编译器有很多的目的，因此相比于我所描述的，它们可能需要更多的步骤。
  *
- * But now you should have a general high-level idea of what most compilers look
- * like.
+ * 但是你现在应该对大多数的编译器的架构有了一个大致的了解。
  *
- * Now that I’ve explained all of this, you’re all good to go write your own
- * compilers right?
+ * 既然我已经介绍了这么多了，你已经做好准备去编写一个属于你自己的编译器了吗？
  *
- * Just kidding, that's what I'm here to help with :P
+ * 哈哈，只是开玩笑，接下来让我们一起来解析下方编译器的源码 :P
  *
- * So let's begin...
+ * 准备开始吧...
  */
 
 /**
@@ -345,11 +337,9 @@
  */
 
 /**
- * We're gonna start off with our first phase of parsing, lexical analysis, with
- * the tokenizer.
+ * 首先开始的是词汇分析，这一步骤我们将借助tokenizer
  *
- * We're just going to take our string of code and break it down into an array
- * of tokens.
+ * 我们将会接受代码字符串，并将它们分解为token数组
  *
  *   (add 2 (subtract 4 2))   =>   [{ type: 'paren', value: '(' }, ...]
  */
