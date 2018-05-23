@@ -168,29 +168,26 @@
  */
 
 /**
- * Transformation
+ * 转化
  * --------------
  *
- * The next type of stage for a compiler is transformation. Again, this just
- * takes the AST from the last step and makes changes to it. It can manipulate
- * the AST in the same language or it can translate it into an entirely new
- * language.
+ * 编译器的下一步将会是转化。它只是把AST从最近的步骤那边拿过来，然后做了一些修改。
+ * 它可以在同语言基础上修改AST，也可以将AST转化为一种全新的语言。
+ * 
+ * 让我们来看下如何转化一个AST
  *
- * Let’s look at how we would transform an AST.
+ * 或许你已经注意到了，我们的AST只有一个元素，这使得它显得非常简单。这里有几个对象，各自
+ * 有不同的属性。它们每一个都是一个AST节点。这些节点上有一些定义了属性，用于描述树上某一
+ * 个独立的部分。
  *
- * You might notice that our AST has elements within it that look very similar.
- * There are these objects with a type property. Each of these are known as an
- * AST Node. These nodes have defined properties on them that describe one
- * isolated part of the tree.
- *
- * We can have a node for a "NumberLiteral":
+ * 这里有一个数字节点
  *
  *   {
  *     type: 'NumberLiteral',
  *     value: '2',
  *   }
  *
- * Or maybe a node for a "CallExpression":
+ * 这里有一个函数节点
  *
  *   {
  *     type: 'CallExpression',
@@ -198,20 +195,15 @@
  *     params: [...nested nodes go here...],
  *   }
  *
- * When transforming the AST we can manipulate nodes by
- * adding/removing/replacing properties, we can add new nodes, remove nodes, or
- * we could leave the existing AST alone and create an entirely new one based
- * on it.
+ * 当转换AST时，我们通过新增/移除/替换的方式，可以添加新的节点，移除节点，或者我们可以
+ * 旧的AST不管，直接生成一个全新的AST.
  *
- * Since we’re targeting a new language, we’re going to focus on creating an
- * entirely new AST that is specific to the target language.
+ * 因为我们的目标是新的语言，所以我们将会生成一个针该改语言的全新的AST。
  *
- * Traversal
+ * 遍历
  * ---------
  *
- * In order to navigate through all of these nodes, we need to be able to
- * traverse through them. This traversal process goes to each node in the AST
- * depth-first.
+ * 为了处理所有的节点，我们需要遍历它们。遍历会优先深度。
  *
  *   {
  *     type: 'Program',
@@ -235,46 +227,44 @@
  *     }]
  *   }
  *
- * So for the above AST we would go:
+ * 对于上面的节点树：
  *
- *   1. Program - Starting at the top level of the AST
- *   2. CallExpression (add) - Moving to the first element of the Program's body
- *   3. NumberLiteral (2) - Moving to the first element of CallExpression's params
- *   4. CallExpression (subtract) - Moving to the second element of CallExpression's params
- *   5. NumberLiteral (4) - Moving to the first element of CallExpression's params
- *   6. NumberLiteral (2) - Moving to the second element of CallExpression's params
+ *   1. Program - 从AST的顶部开始
+ *   2. CallExpression (add) -到了Program的第一个节点
+ *   3. NumberLiteral (2) - 到了CallExpression的第一个参数
+ *   4. CallExpression (subtract) - 到了CallExpression的第二个参数
+ *   5. NumberLiteral (4) - 到了CallExpression的第一个参数
+ *   6. NumberLiteral (2) - 到了CallExpression的第二个参数
  *
- * If we were manipulating this AST directly, instead of creating a separate AST,
- * we would likely introduce all sorts of abstractions here. But just visiting
- * each node in the tree is enough for what we're trying to do.
+ * 如果我们直接操作AST,而不是创建一个独立的AST,我们可能会介绍所有种类的抽象，但是目前
+ * 访问所有节点的方法已经够用了。
  *
+ * 之所以我要使用“访问”这个词，是因为这里有一种模式，它展示如何去操作对象结构
  * The reason I use the word "visiting" is because there is this pattern of how
  * to represent operations on elements of an object structure.
  *
  * Visitors
  * --------
  *
- * The basic idea here is that we are going to create a “visitor” object that
- * has methods that will accept different node types.
+ * 最基本的想法是，创建一个visitor对象，它有一些方法可以用来接受不同的节点类型。
  *
  *   var visitor = {
  *     NumberLiteral() {},
  *     CallExpression() {},
  *   };
  *
+ * 遍历AST时，我们将会调用visitor的这些方法去处理对应的节点类型。
  * When we traverse our AST, we will call the methods on this visitor whenever we
  * "enter" a node of a matching type.
  *
- * In order to make this useful we will also pass the node and a reference to
- * the parent node.
+ * 为了更好用，我们会传入节点和父节点的引用。
  *
  *   var visitor = {
  *     NumberLiteral(node, parent) {},
  *     CallExpression(node, parent) {},
  *   };
  *
- * However, there also exists the possibility of calling things on "exit". Imagine
- * our tree structure from before in list form:
+ * 但是，依旧存在一种可能性--在退出时调用函数。想象一下，我们之前的树结构转化列表的形式：
  *
  *   - Program
  *     - CallExpression
@@ -283,9 +273,8 @@
  *         - NumberLiteral
  *         - NumberLiteral
  *
- * As we traverse down, we're going to reach branches with dead ends. As we
- * finish each branch of the tree we "exit" it. So going down the tree we
- * "enter" each node, and going back up we "exit".
+ * 向下遍历时，我们会到达一些分支的尽头。当到达一些分支的尽头时，我们将退出。所以向
+ * 下走，我们进入节点，往回走我们会退出。
  *
  *   -> Program (enter)
  *     -> CallExpression (enter)
@@ -300,7 +289,7 @@
  *     <- CallExpression (exit)
  *   <- Program (exit)
  *
- * In order to support that, the final form of our visitor will look like this:
+ * 为了支持这种方式，最终的visitor会是这样的：
  *
  *   var visitor = {
  *     NumberLiteral: {
@@ -311,9 +300,11 @@
  */
 
 /**
- * Code Generation
+ * 代码生成
  * ---------------
  *
+ * 编译器的最后一个阶段是生成代码。有时候编译器会做些和转化阶段重复的事情，但是大多数的
+ * 代码生成还是在AST阶段的
  * The final phase of a compiler is code generation. Sometimes compilers will do
  * things that overlap with transformation, but for the most part code
  * generation just means take our AST and string-ify code back out.
