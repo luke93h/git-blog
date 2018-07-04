@@ -1,5 +1,5 @@
 # react源码分析-ReactDom.render
-![原型图](https://github.com/luke93h/git-blog/blob/master/imgs/reactDom.png)
+![原型图](https://raw.githubusercontent.com/luke93h/git-blog/master/imgs/reactDom.png)
 ## ReactDom.render
 ```jsx
 ReactDOM.render(
