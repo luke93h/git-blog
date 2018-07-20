@@ -39,9 +39,11 @@ while ((rootSibling = container.lastChild)) {
 
 
 ## ExpirationTime
+
 在react16中，随处可见expirationTime这个值，这个值的含义是：  
 - 所谓的到期时间（ExpirationTime），是相对于调度器初始调用的起始时间而言的一个时间段；调度器初始调用后的某一段时间内，需要调度完成这项更新，这个时间段长度值就是到期时间值。  
 - 本篇分析将略过这点，以便更好的理解react的整体架构
+
 ## Fiber
 
 react在进行组件渲染时，从setState开始到渲染完成整个过程是同步的（“一气呵成”）。如果需要渲染的组件比较庞大，js执行会占据主线程时间较长，会导致页面响应度变差，使得react在动画、手势等应用中效果比较差。
