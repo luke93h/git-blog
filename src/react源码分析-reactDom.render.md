@@ -5,9 +5,12 @@
 - 前言
   - [背景](#背景)
   - [优化内容](#优化内容)
-- [ReactDom.render](#ReactDom.render)
-- [legacyCreateRootFromDOMContainer](#legacyCreateRootFromDOMContainer)
-- [Fiber](#Fiber)
+- [调和阶段](#调和-reconciliation)
+  - [ReactDom.render](#ReactDom.render)
+  - [legacyCreateRootFromDOMContainer](#legacyCreateRootFromDOMContainer)
+  - [Fiber](#Fiber)
+- 更新阶段
+
 - [小技巧](#小技巧)
 - [参考](#参考)
 
@@ -29,6 +32,11 @@
   - 对正在做的工作调整优先次序、重做、复用上次（做了一半的）成果
 
 3. 项目体积大幅度缩小，相比前一个大版本，react + react-dom的体积从161.kb（49.8kb gzipped）缩减到了109kb（34.8 kb gzipped），优化幅度高达30%。
+
+
+## 调和-reconciliation
+
+React算法，用于计算新旧树上需要更新的部分
 
 ## ReactDom.render
 
@@ -69,6 +77,7 @@ while ((rootSibling = container.lastChild)) {
 react在进行组件渲染时，从setState开始到渲染完成整个过程是同步的（“一气呵成”）。如果需要渲染的组件比较庞大，js执行会占据主线程时间较长，会导致页面响应度变差，使得react在动画、手势等应用中效果比较差。
 为了解决这个问题，react团队经过两年的工作，重写了react中核心算法——reconciliation。并在v16版本中发布了这个新的特性。为了区别之前和之后的reconciler，通常将之前的reconciler称为stack reconciler，重写后的称为fiber reconciler，简称为Fiber。
 
+
 ## 小技巧
 
 - 阅读源码时，可以在本地用create-react-app新建一下小demo项目，然后直接在node_modules中的react-dom.development.js和react.development.js两个文件里的对应方法打断点。![原型图](https://raw.githubusercontent.com/luke93h/git-blog/master/imgs/breakPoint.png)
@@ -79,3 +88,4 @@ react在进行组件渲染时，从setState开始到渲染完成整个过程是�
 - [React 16 Fiber源码速览](http://zxc0328.github.io/2017/09/28/react-16-source/)
 - [react官方文档](https://reactjs.org/docs/react-dom.html)
 - [React Fiber](https://juejin.im/post/5ab7b3a2f265da2378403e57)
+- [React Fiber Architecture](https://github.com/acdlite/react-fiber-architecture)
