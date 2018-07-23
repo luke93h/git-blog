@@ -2,13 +2,16 @@
 ![原型图](https://raw.githubusercontent.com/luke93h/git-blog/master/imgs/reactDom.png)
 
 ## 目录
-
+- [前言](#前言)
 - [ReactDom.render](#ReactDom.render)
 - [legacyCreateRootFromDOMContainer](#legacyCreateRootFromDOMContainer)
 - [Fiber](#Fiber)
 - [小技巧](#小技巧)
 - [参考](#参考)
 
+## 前言
+
+距离react16发布已经过去很久了，facebook开发团队耗时2年多，究竟做了什么呢。
 
 ## ReactDom.render
 
