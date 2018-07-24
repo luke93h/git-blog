@@ -2,6 +2,14 @@
 ![原型图](https://raw.githubusercontent.com/luke93h/git-blog/master/imgs/reactDom.png)
 
 ## 目录
+- 前言
+  - [背景](#背景)
+  - [优化内容](#优化内容)
+- [调和阶段](#调和-reconciliation)
+  - [ReactDom.render](#ReactDom.render)
+  - [legacyCreateRootFromDOMContainer](#legacyCreateRootFromDOMContainer)
+  - [Fiber](#Fiber)
+- 更新阶段
 
 - [ReactDom.render](#ReactDom.render)
 - [legacyCreateRootFromDOMContainer](#legacyCreateRootFromDOMContainer)
@@ -14,6 +22,29 @@
 - [小技巧](#小技巧)
 - [参考](#参考)
 
+## 背景
+
+距离react16发布已经过去很久了，facebook开发团队耗时2年多，究竟做了什么呢。从下面两张图中可以很直观的看出，react16带来的性能优化
+![animation1](/luke93h/git-blog/blob/master/imgs/animation1.gif?raw=true)
+
+![animation2](/luke93h/git-blog/blob/master/imgs/animation2.gif?raw=true)
+
+造成这样的现象主要是因为：单个网页由js、UI渲染线程、浏览器事件触发线程、http请求线程、EventLoop轮询的处理线程等线程组成，其中js引擎线程和ui渲染线程是互斥的，也就是说在处理js任务时，页面将停止渲染，一旦js占用时间过长，造成页面每秒渲染的帧数过低，就会给用造成很明显的卡顿感。
+
+## 优化内容
+
+1. 新增了Portals、Fragments的组件类型，新增了componentDidCatch、static getDerivedStateFromProps、getSnapshotBeforeUpdate声明周期，componentWillMount、componentWillReceiveProps、componentWillUpdate将会在未来被移除，支持自定义的dom属性，扩展了render函数可返回的类型
+
+2. 引入异步架构，优化了包括动画，布局和手势的性能。
+  - 把可中断的工作拆分成小任务
+  - 对正在做的工作调整优先次序、重做、复用上次（做了一半的）成果
+
+3. 项目体积大幅度缩小，相比前一个大版本，react + react-dom的体积从161.kb（49.8kb gzipped）缩减到了109kb（34.8 kb gzipped），优化幅度高达30%。
+
+
+## 调和-reconciliation
+
+React算法，用于计算新旧树上需要更新的部分
 
 ## ReactDom.render
 
@@ -43,7 +74,6 @@ while ((rootSibling = container.lastChild)) {
 
 在react16中，随处可见expirationTime这个值，这个值的含义是：  
 - 所谓的到期时间（ExpirationTime），是相对于调度器初始调用的起始时间而言的一个时间段；调度器初始调用后的某一段时间内，需要调度完成这项更新，这个时间段长度值就是到期时间值。  
-- 本篇分析将略过这点，以便更好的理解react的整体架构
 
 ## Fiber
 
@@ -88,3 +118,4 @@ createUpdate返回一个update对象，后续的更新操作取决于这个对�
 - [react官方文档](https://reactjs.org/docs/react-dom.html)
 - [React Fiber](https://juejin.im/post/5ab7b3a2f265da2378403e57)
 - [React Fiber初探](http://blog.codingplayboy.com/2017/12/02/react_fiber/#alternate_fiber)
+- [React Fiber Architecture](https://github.com/acdlite/react-fiber-architecture)
