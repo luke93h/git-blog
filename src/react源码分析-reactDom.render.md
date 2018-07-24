@@ -18,10 +18,11 @@
   - [beginWork](#beginWork)
   - [completeWork](#completeWork)
 - [更新阶段](#更新阶段)
-  - []
+  - [commitRoot](#commitRoot)
 
 - [小技巧](#小技巧)
 - [参考](#参考)
+- [后续](#后续)
 
 ## 背景
 
@@ -175,3 +176,8 @@ switch (workInProgress.tag) {
 - [react官方文档](https://reactjs.org/docs/react-dom.html)
 - [React Fiber](https://juejin.im/post/5ab7b3a2f265da2378403e57)
 - [React Fiber Architecture](https://github.com/acdlite/react-fiber-architecture)
+
+# 后续
+
+- setState分析（待开始）
+- 事件系统分析（待开始）
