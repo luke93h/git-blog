@@ -89,8 +89,6 @@ while ((rootSibling = container.lastChild)) {
 ```
 2. 创建ReactRoot对象
 
-<<<<<<< HEAD
-=======
 ## Fiber
 
 react在进行组件渲染时，从setState开始到渲染完成整个过程是同步的（“一气呵成”）。  
@@ -102,15 +100,11 @@ react在进行组件渲染时，从setState开始到渲染完成整个过程是�
 
 规划更新的过期时间和优先级
 
->>>>>>> bbcaefc26877862451087aa592758f19abce5cb7
 ## ExpirationTime
 
 在react16中，随处可见expirationTime这个值，这个值的含义是：  
 - 所谓的到期时间（ExpirationTime），是相对于调度器初始调用的起始时间而言的一个时间段；调度器初始调用后的某一段时间内，需要调度完成这项更新，这个时间段长度值就是到期时间值。  
-<<<<<<< HEAD
-=======
 - 目前react16的异步更新和优先级更新尚未完善，因此本文对此功能将暂不做深究。
->>>>>>> bbcaefc26877862451087aa592758f19abce5cb7
 
 ## priority
 
@@ -118,34 +112,6 @@ react在进行组件渲染时，从setState开始到渲染完成整个过程是�
 
 ## 调和-reconciliation
 
-<<<<<<< HEAD
-## Fiber.alternate
-
-可以理解为一个fiber版本池，用于交替记录组件更新（切分任务后变成多阶段更新）过程中fiber的更新，因为在组件更新的各阶段，更新前及更新过程中fiber状态并不一致，在需要恢复时（如，发生冲突），即可使用另一者直接回退至上一版本fiber。
-1. 使用alternate属性双向连接一个当前fiber和其work-in-progress，当前fiber实例的alternate属性指向其work-in-progress，work-in-progress的alternate属性指向当前稳定fiber；
-2. 当前fiber的替换版本是其work-in-progress，work-in-progress的交替版本是当前fiber；
-3. 当work-in-progress更新一次后，将同步至当前fiber，然后继续处理，同步直至任务完成；
-4. work-in-progress指向处理过程中的fiber，而当前fiber总是维护处理完成的最新版本的fiber。
-
-## updateContainerAtExpirationTime
-
-在限定的时间内更新容器
-
-## scheduleRootUpdate
-
-安排并执行更新任务，可分为三步：
-1. createUpdate，生成更新对象
-2. enqueueUpdate，将更新对象插入更新队列之中
-3. scheduleWork，开始更新操作
-
-## createUpdate
-
-createUpdate返回一个update对象，后续的更新操作取决于这个对象里面的内容
-
-## enqueueUpdate
-
-将更新内容插入更新队列之中
-=======
 React算法，用于计算新旧树上需要更新的部分
 
 ## workLoop
@@ -206,7 +172,6 @@ switch (workInProgress.tag) {
 1. commitBeforeMutationLifecycles：调用getSnapshotBeforeUpdate声明周期
 2. commitAllHostEffects：执行所有会产生副作用的操作,插入、更新、移除、ref的unmount
 3. commitAllLifeCycles：生命周期
->>>>>>> bbcaefc26877862451087aa592758f19abce5cb7
 
 ## 小技巧
 
