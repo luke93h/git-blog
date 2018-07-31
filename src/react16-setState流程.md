@@ -2,6 +2,6 @@
 ![原型图](https://raw.githubusercontent.com/luke93h/git-blog/master/imgs/setState.png)
 
 ## 目录
-- 前言
-  - [背景](#背景)
-  - [优化内容](#优化内容)
+- [前言](#前言)
+
+## 前言

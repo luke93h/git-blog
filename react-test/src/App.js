@@ -13,8 +13,10 @@ class App extends Component {
   }
   render() {
     return (
-      <div onClick={this.onClick}>
-        {this.state.a}
+      <div>
+        <div onClick={this.onClick}>
+          {this.state.a}
+        </div>
       </div>
     );
   }
