@@ -8,13 +8,13 @@ class App extends Component {
   }
   onClick = () => {
     this.setState({
-      a: '1'
+      a: this.state.a + 1
     })
   }
   render() {
     return (
       <div onClick={this.onClick}>
-        REACT------COMPONENT
+        {this.state.a}
       </div>
     );
   }
