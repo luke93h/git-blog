@@ -1,5 +1,5 @@
 # react源码分析-事件系统分析
-![原型图](https://raw.githubusercontent.com/luke93h/git-blog/master/imgs/reactDom.png)
+![原型图](https://raw.githubusercontent.com/luke93h/git-blog/master/imgs/event.png)
 
 ## 目录
 - 前言

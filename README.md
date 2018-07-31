@@ -6,3 +6,6 @@
 * [javascript之toFixed踩坑记录](https://github.com/luke93h/git-blog/issues/5)
 * [js线程](https://github.com/luke93h/git-blog/issues/6)
 * [react架构分析](https://github.com/luke93h/git-blog/issues/7)
+* [react事件系统分析](https://github.com/luke93h/git-blog/issues/10)
+* [reactsetState分析](https://github.com/luke93h/git-blog/issues/11)
+* [自问自答](https://github.com/luke93h/git-blog/issues/9)

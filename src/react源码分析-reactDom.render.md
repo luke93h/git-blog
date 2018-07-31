@@ -180,5 +180,5 @@ switch (workInProgress.tag) {
 
 # 后续
 
-- setState分析（待开始）
-- 事件系统分析（待开始）
+- [事件系统分析](https://github.com/luke93h/git-blog/issues/10)
+- [setState分析](https://github.com/luke93h/git-blog/issues/11)
