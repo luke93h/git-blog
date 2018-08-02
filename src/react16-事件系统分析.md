@@ -121,3 +121,10 @@ function accumulateDirectionalDispatches(inst, phase, event) {
 ## 后续
 
 在执行完事件监听函数后，流程跳转至performWorkOnRoot，会更新react tree
+
+
+## 相关
+
+
+- [react源码分析-reactDom.render](https://github.com/luke93h/git-blog/issues/11)
+- [事件系统分析](https://github.com/luke93h/git-blog/issues/10)
