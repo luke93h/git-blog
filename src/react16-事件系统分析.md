@@ -126,5 +126,5 @@ function accumulateDirectionalDispatches(inst, phase, event) {
 ## 相关
 
 
-- [react源码分析-reactDom.render](https://github.com/luke93h/git-blog/issues/11)
+- [react源码分析-reactDom.render](https://github.com/luke93h/git-blog/issues/7)
 - [事件系统分析](https://github.com/luke93h/git-blog/issues/10)

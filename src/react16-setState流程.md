@@ -17,9 +17,9 @@
 
 ## 结尾语
 
-没错，setState的逻辑就是这么简单。
+没错，setState的逻辑就是这么简单。如果想了解requestWork阶段的内容，请访问[react源码分析-reactDom.render](https://github.com/luke93h/git-blog/issues/7)
 
 ## 相关
 
-- [react源码分析-reactDom.render](https://github.com/luke93h/git-blog/issues/8)
+- [react源码分析-reactDom.render](https://github.com/luke93h/git-blog/issues/7)
 - [事件系统分析](https://github.com/luke93h/git-blog/issues/10)
