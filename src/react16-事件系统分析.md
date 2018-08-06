@@ -16,9 +16,10 @@
 
 ## 前言
 
-1. React事件监听函数并非直接绑定在dom上
-2. React事件监听函数接受的event对象并不是原生的evnet，而是react生成的合成对象(SyntheticEvent)
-3. 事件系统分为两个步骤，注册和触发
+在开发react项目时，是否有过这样的困惑：
+1. react每次render后，会在dom上重新注册事件监听函数吗？
+2. 事件监听函数里面的event是原生的event吗？如果不是，是如何生成的呢？
+
 
 ## 注册
 
@@ -120,3 +121,10 @@ function accumulateDirectionalDispatches(inst, phase, event) {
 ## 后续
 
 在执行完事件监听函数后，流程跳转至performWorkOnRoot，会更新react tree
+
+
+## 相关
+
+
+- [react源码分析-reactDom.render](https://github.com/luke93h/git-blog/issues/7)
+- [setState分析](https://github.com/luke93h/git-blog/issues/11)
