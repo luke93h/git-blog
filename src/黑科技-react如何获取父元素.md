@@ -51,5 +51,6 @@ ReactDOM.render(<App />, rootElement);
 1. this._reactInternalFiber返回的是fiber对象
 2. Child的return是div，而child的return的return才是App
 3. 通过fiber.stateNode获取组件实例
+4. 如果想要自动找到classCommponent，可以通过判断fiber的tag是否为2向上遍历寻找，此处不再展开。
 
 [在线调试](https://codesandbox.io/s/ll39p3yo8z)
