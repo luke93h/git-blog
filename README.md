@@ -1,4 +1,5 @@
 # [Blog](https://github.com/luke93h/git-blog/issues)
+
 * [react-redux源码分析](https://github.com/luke93h/git-blog/issues/2)
 * [redux-saga源码分析](https://github.com/luke93h/git-blog/issues/3)
 * [redux源码分析](https://github.com/luke93h/git-blog/issues/4)
@@ -9,3 +10,6 @@
 * [react事件系统分析](https://github.com/luke93h/git-blog/issues/10)
 * [reactsetState分析](https://github.com/luke93h/git-blog/issues/11)
 * [自问自答](https://github.com/luke93h/git-blog/issues/9)
+* [vscode路径别名问题](https://github.com/luke93h/git-blog/issues/12)
+
+> 文章保存在issue中 
