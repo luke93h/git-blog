@@ -11,5 +11,9 @@
 * [reactsetState分析](https://github.com/luke93h/git-blog/issues/11)
 * [自问自答](https://github.com/luke93h/git-blog/issues/9)
 * [vscode路径别名问题](https://github.com/luke93h/git-blog/issues/12)
+* [git回滚 ](https://github.com/luke93h/git-blog/issues/13)
+* [黑科技-react如何获取父元素](https://github.com/luke93h/git-blog/issues/14)
+* [黑科技-react如何从dom上获取fiber实例](https://github.com/luke93h/git-blog/issues/15)
+* [redux插件原理详解](https://github.com/luke93h/git-blog/issues/16)
 
 > 文章保存在issue中 

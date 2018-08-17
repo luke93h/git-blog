@@ -112,4 +112,4 @@ function compose(...funcs) {
 }
 
 ```
-嗯，没错compose的代码更少
+嗯，没错compose的代码更少，如果middleWare为[fn1, fn2, fn3],则compose后的顺序为fn1(fn2(fn3(dispatch)))
