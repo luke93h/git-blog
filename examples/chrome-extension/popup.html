@@ -2,47 +2,66 @@
 <!-- saved from url=(0080)https://developer.chrome.com/extensions/examples/tutorials/getstarted/popup.html -->
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Getting Started Extension's Popup</title>
-<style type="text/css">
-  body {
-    margin: 10px;
-    white-space: nowrap;
-  }
+    <meta charset="utf-8"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Getting Started Extension's Popup</title>
+  <style>
+    body {
+      margin: 10px;
+      white-space: nowrap;
+    }
 
-  h1 {
-    font-size: 15px;
-  }
+    h1 {
+      font-size: 15px;
+    }
 
-  #container {
-    align-items: center;
-    display: flex;
-    justify-content: space-between;
-  }
-</style>
+    #container {
+      width: 300px;
+      padding: 0px;
+    }
+    .row{
+      line-height: 40px;
+    }
+    .row .title{
+      width: 100px;
+      text-align: right;
+      display: inline-block;
+    }
+    .row input{
+      width: 150px;
+    }
+    .btn-wrapper{
+      text-align: center;
+    }
+  </style>
 
+</head>
+
+<body>
+  <h1>自动查询库存量</h1>
+  <div id="container">
+    <div class='row'>
+      <span class='title'>商品码：</span>
+      <input id='code' type="text">
+    </div>
+    <div class='row'>
+      <span class='title'>数量：</span>
+      <input  id='number' type="text">
+    </div>
+    <div class='row'>
+      <span class='title'>轮询间隔时间(s)：</span>
+      <input  id='interval' type="text">
+    </div>
+    <div class='btn-wrapper'>
+      <button class="btn" id='start'>开始</button>
+    </div>
+  </div>
   <!--
     - JavaScript and HTML must be in separate files: see our Content Security
     - Policy documentation[1] for details and explanation.
     -
     - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
   -->
-</head>
-
-<body>
-  <h1>Background Color Changer</h1>
-  <div id="container">
-    <span>Choose a color</span>
-    <select id="dropdown">
-      <option selected="" disabled="" hidden="" value=""></option>
-      <option value="white">White</option>
-      <option value="pink">Pink</option>
-      <option value="green">Green</option>
-      <option value="yellow">Yellow</option>
-    </select>
-  </div>
-  
-
+  <script type="text/javascript" src="js/popup.js"></script>
 </body>
-<script src="popup.js"></script>
 </html>

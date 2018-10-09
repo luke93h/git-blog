@@ -8,6 +8,7 @@
  * @param {function(string)} callback called when the URL of the current tab
  *   is found.
  */
+
 function getCurrentTabUrl(callback) {
   // Query filter to be passed to chrome.tabs.query - see
   // https://developer.chrome.com/extensions/tabs#method-query
@@ -23,7 +24,6 @@ function getCurrentTabUrl(callback) {
     // A window can only have one active tab at a time, so the array consists of
     // exactly one tab.
     var tab = tabs[0];
-
     // A tab is a plain object that provides information about the tab.
     // See https://developer.chrome.com/extensions/tabs#type-Tab
     var url = tab.url;
@@ -52,16 +52,14 @@ function getCurrentTabUrl(callback) {
  *
  * @param {string} color The new background color.
  */
-function changeBackgroundColor(color) {
-  var script = 'document.body.style.backgroundColor="' + color + '";';
+
+function startPoll(infos) {
   // See https://developer.chrome.com/extensions/tabs#method-executeScript.
   // chrome.tabs.executeScript allows us to programmatically inject JavaScript
   // into a page. Since we omit the optional first argument "tabId", the script
   // is inserted into the active tab of the current window, which serves as the
   // default.
-  chrome.tabs.executeScript({
-    code: script
-  });
+  chrome.tabs.executeScript({file: "js/inject.js"});
 }
 
 /**
@@ -71,7 +69,7 @@ function changeBackgroundColor(color) {
  * @param {function(string)} callback called with the saved background color for
  *     the given url on success, or a falsy value if no color is retrieved.
  */
-function getSavedBackgroundColor(url, callback) {
+function getSaved(url, callback) {
   // See https://developer.chrome.com/apps/storage#type-StorageArea. We check
   // for chrome.runtime.lastError to ensure correctness even when the API call
   // fails.
@@ -86,9 +84,9 @@ function getSavedBackgroundColor(url, callback) {
  * @param {string} url URL for which background color is to be saved.
  * @param {string} color The background color to be saved.
  */
-function saveBackgroundColor(url, color) {
+function saveInputValue(url, infos) {
   var items = {};
-  items[url] = color;
+  items[url] = infos;
   // See https://developer.chrome.com/apps/storage#type-StorageArea. We omit the
   // optional callback since we don't need to perform any action once the
   // background color is saved.
@@ -105,22 +103,37 @@ function saveBackgroundColor(url, color) {
 // user devices.
 document.addEventListener('DOMContentLoaded', () => {
   getCurrentTabUrl((url) => {
-    var dropdown = document.getElementById('dropdown');
+    var startBtn = document.getElementById('start');
+    var codeInput = document.getElementById('code');
+    var numberInput = document.getElementById('number');
+    var intervalInput = document.getElementById('number');
 
     // Load the saved background color for this page and modify the dropdown
     // value, if needed.
-    getSavedBackgroundColor(url, (savedColor) => {
-      if (savedColor) {
-        changeBackgroundColor(savedColor);
-        dropdown.value = savedColor;
+    getSaved(url, (infos) => {
+      if (infos) {
+        startPoll(infos);
+        codeInput.value = infos.code;
+        numberInput.value = infos.number;
+        intervalInput.value = infos.intervalInput;
       }
     });
 
     // Ensure the background color is changed and saved when the dropdown
     // selection changes.
-    dropdown.addEventListener('change', () => {
-      changeBackgroundColor(dropdown.value);
-      saveBackgroundColor(url, dropdown.value);
+    startBtn.addEventListener('click', () => {
+      var infos = {
+        code: codeInput.value,
+        number: numberInput.value,
+        intervalInput: intervalInput.value
+      }
+      startPoll(infos);
+      saveInputValue(url, {
+        code: codeInput.value,
+        number: numberInput.value,
+        intervalInput: intervalInput.value
+      });
     });
   });
 });
+
