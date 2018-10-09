@@ -59,7 +59,10 @@ function startPoll(infos) {
   // into a page. Since we omit the optional first argument "tabId", the script
   // is inserted into the active tab of the current window, which serves as the
   // default.
-  chrome.tabs.executeScript({file: "js/inject.js"});
+  
+  sendMessageToContentScript({type:'start', payload:infos}, function(response){
+    console.log('来自content的回复：'+response);
+  });
 }
 
 /**
@@ -136,4 +139,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+
+function sendMessageToContentScript(message, callback){
+	chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
+		chrome.tabs.sendMessage(tabs[0].id, message, function(response){
+			if(callback) callback(response);
+		});
+	});
+}
 

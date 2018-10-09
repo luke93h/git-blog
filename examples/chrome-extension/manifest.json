@@ -17,5 +17,9 @@
     "default_title": "库存查询",
     "default_icon": "icon.png",
     "default_popup": "popup.html"
-  }
+  },
+  "content_scripts":[{
+    "matches": ["http://smart.supor.com:9097/*","https://smart.supor.com:9097/*"],
+    "js": ["js/content.js"]
+  }]
 }
