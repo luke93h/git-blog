@@ -61,7 +61,6 @@ function startPoll(infos) {
   // default.
   
   sendMessageToContentScript({type:'start', payload:infos}, function(response){
-    console.log('来自content的回复：'+response);
   });
 }
 
@@ -148,3 +147,31 @@ function sendMessageToContentScript(message, callback){
 	});
 }
 
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
+  // console.log(sender.tab ?"from a content script:" + sender.tab.url :"from the extension");
+  if(request.type == 'refresh') {
+    var payload = request.payload
+    var trDom = document.querySelectorAll('#' + payload.code)
+    if(trDom.length > 0){
+      trDom[0].querySelectorAll('td.stock')[0].innerHTML = payload.stock
+      trDom[0].querySelectorAll('td.time')[0].innerHTML = payload.time
+    }else{
+      document.querySelectorAll('#result table tbody')[0].appendChild(createTr(payload))
+    }
+  }
+});
+function createTr(info){
+  var tr = document.createElement("tr")
+  tr.id = info.code
+  tr.innerHTML = 
+    '<td class="name">' +
+      info.name +
+    '</td>' +
+    '<td class="stock">' +
+      info.stock +
+    '</td>' +
+    '<td class="time">' +
+      info.time +
+    '</td>' 
+    return tr
+}

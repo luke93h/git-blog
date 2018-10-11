@@ -33,6 +33,19 @@
     .btn-wrapper{
       text-align: center;
     }
+    .name{
+      width: 100px;
+      max-width: 100px;
+      overflow: hidden;
+      word-break: break-all;
+      white-space: normal;
+    }
+    .stock{
+      max-width: 50px;
+    }
+    .time{
+      max-width: 80px;
+    }
   </style>
 
 </head>
@@ -48,9 +61,28 @@
       <span class='title'>数量：</span>
       <input  id='number' type="text">
     </div>
-    <div class='row'>
+    <!-- <div class='row'>
       <span class='title'>轮询间隔时间(s)：</span>
       <input  id='interval' type="text">
+    </div> -->
+    <div id="result">
+      结果
+      <table>
+        <tbody>
+          <tr>
+            <th>
+              商品名
+            </th>
+            <th>
+              最新库存量
+            </th>
+            <th>
+              更新事件
+            </th>
+
+          </tr>
+        </tbody>
+      </table>
     </div>
     <div class='btn-wrapper'>
       <button class="btn" id='start'>开始</button>
