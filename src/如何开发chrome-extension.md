@@ -1,12 +1,31 @@
 # 如何开发chrome extension
 
-## 为什么要用chrome extension
+## chrome extension是什么
 
 1. chrome extension开发成本低，由一些文件（包括 HTML、CSS、JavaScript、图片以及其他任何您需要的文件）经过 zip 打包得到，本质上是网页。
 2. chrome extension不仅可以利用[浏览器为网页提供的所有 API](https://crxdoc-zh.appspot.com/extensions/api_other)，还可以用[chrome为扩展程序提供了许多专用 API](https://crxdoc-zh.appspot.com/extensions/api_index)。
-3. 有些场景下，我们并不是网页的开发者，但想要为网站添加更多的功能，这时候也可以用chrome extension来解决。
 
-## 文件
+## 为什么要用chrome extension
+
+1. 有些场景下，我们并不是网页的开发者，但想要为网站添加更多的功能，这时候也可以用chrome extension来解决。
+2. chrome extension拥有比网页更加丰富的api
+
+## chrome扩展能做什么
+
+1. 代理：[Proxy SwitchyOmega](https://chrome.google.com/webstore/detail/proxy-switchyomega/padekgcemlokbadohgkifijomclgjgif)
+2. 开发者工具: [react](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi)、[redux](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd)
+3. 广告过滤：[AdGuard 广告拦截器](https://chrome.google.com/webstore/detail/adguard-adblocker/bgnkhhnnamicmpeenaelnjfhikgbkllg)
+4. 抢票软件：[台湾高铁抢票插件](https://chrome.google.com/webstore/detail/%E5%8F%B0%E6%B9%BE%E9%AB%98%E9%93%81%E6%8A%A2%E7%A5%A8%E6%8F%92%E4%BB%B6/nfkfaajobpcjpmcmpcacncimfmjppgoj)
+5. 视频下载: [优酷一键通](https://chrome.google.com/webstore/detail/%E4%BC%98%E9%85%B7%E4%B8%80%E9%94%AE%E9%80%9A/alddjbjplgobbllfolehibiclbhmomla)
+6. 等等
+
+## 开发与调试
+
+1. 加载扩展文件：扩展程序页面（chrome://extensions），开启开发者模式，点击“加载已解压的扩展程序”
+2. 更新：扩展程序页面（chrome://extensions），点击“更新”
+3. 调试popup.js：右击扩展图标，点击“审核弹出内容”
+
+## 文件组成
 
 1. [清单文件-manifest.json](#manifest)
 2. 一个或多个 HTML 文件（除非扩展程序是一个主题背景）
@@ -126,7 +145,12 @@ chrome-extension://<扩展程序标识符>/<文件路径>
 }
 ```
 
+## 用户界面网页-popup
+
+popup是点击browser_action或者page_action图标时打开的一个小窗口网页，焦点离开网页就立即关闭，一般用来做一些临时性的交互。
+
 ## 参考
 [官方文档](https://developer.chrome.com/extensions/getstarted)
 [中文文档(非官方)](https://crxdoc-zh.appspot.com/extensions/getstarted)
 [Chrome插件(扩展)开发全攻略](https://www.cnblogs.com/liuxianan/p/chrome-plugin-develop.html)
+[sxei的博客](https://github.com/sxei/chrome-plugin-demo)
