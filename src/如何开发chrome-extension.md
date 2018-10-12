@@ -1,4 +1,4 @@
-# 如何开发chrome extension
+# chrome extension简介
 
 ## chrome extension是什么
 
@@ -147,7 +147,119 @@ chrome-extension://<扩展程序标识符>/<文件路径>
 
 ## 用户界面网页-popup
 
-popup是点击browser_action或者page_action图标时打开的一个小窗口网页，焦点离开网页就立即关闭，一般用来做一些临时性的交互。
+popup是点击browser_action或者page_action图标时打开的一个小窗口网页，焦点离开网页就立即关闭。
+一般用于和用户的交互，并把信息传递给content-scripts或者backgorund.js，实现功能的交互。
+
+![popup](https://github.com/luke93h/git-blog/blob/master/imgs/popup.png?raw=true)
+
+配置方式：
+
+```jsx
+{
+	"browser_action":
+	{
+		"default_icon": "img/icon.png",
+		// 图标悬停时的标题，可选
+		"default_title": "这是一个示例Chrome插件",
+		"default_popup": "popup.html"
+	}
+}
+```
+
+## content-scripts
+
+所谓content-scripts，其实就是Chrome插件中向页面注入脚本的一种形式（虽然名为script，其实还可以包括css的），借助content-scripts我们可以实现通过配置的方式轻松向指定页面注入JS和CSS（如果需要动态注入，可以参考下文），最常见的比如：广告屏蔽、页面CSS定制，等等。
+
+示例配置：
+```jsx
+{
+	// 需要直接注入页面的JS
+	"content_scripts": 
+	[
+		{
+			//"matches": ["http://*/*", "https://*/*"],
+			// "<all_urls>" 表示匹配所有地址
+			"matches": ["<all_urls>"],
+			// 多个JS按顺序注入
+			"js": ["js/jquery-1.8.3.js", "js/content-script.js"],
+			// JS的注入可以随便一点，但是CSS的注意就要千万小心了，因为一不小心就可能影响全局样式
+			"css": ["css/custom.css"],
+			// 代码注入的时间，可选值： "document_start", "document_end", or "document_idle"，最后一个表示页面空闲时，默认document_idle
+			"run_at": "document_start"
+		}
+	],
+}
+```
+
+## background
+
+后台（姑且这么翻译吧），是一个常驻的页面，它的生命周期是插件中所有类型页面中最长的，它随着浏览器的打开而打开，随着浏览器的关闭而关闭，所以通常把需要一直运行的、启动就运行的、全局的代码放在background里面。
+
+配置： 
+
+```jsx
+{
+	// 会一直常驻的后台JS或后台页面
+	"background":
+	{
+		// 2种指定方式，如果指定JS，那么会自动生成一个背景页
+		"page": "background.html"
+		//"scripts": ["js/background.js"]
+	},
+}
+```
+
+## event-pages
+
+这里顺带介绍一下event-pages，它是一个什么东西呢？鉴于background生命周期太长，长时间挂载后台可能会影响性能，所以Google又弄一个event-pages，在配置文件上，它与background的唯一区别就是多了一个persistent参数：
+
+配置： 
+
+```jsx
+{
+	"background":
+	{
+		"scripts": ["event-page.js"],
+		"persistent": false
+	},
+}
+```
+
+# devtools扩展
+
+每打开一个开发者工具窗口，都会创建devtools页面的实例，F12窗口关闭，页面也随着关闭，所以devtools页面的生命周期和devtools窗口是一致的。devtools页面可以访问一组特有的DevTools API以及有限的扩展API，这组特有的DevTools API只有devtools页面才可以访问，background都无权访问，这些API包括：
+
+配置
+```jsx
+{
+	// 只能指向一个HTML文件，不能是JS文件
+	"devtools_page": "devtools.html"
+}
+```
+
+## 4种类型的JS对比
+
+|         JS种类       |  可访问的API                                   |  DOM访问情况	     |  JS访问情况   |  直接跨域  |
+|   ------            |  ----------                                    |  -----------      |  ----------  |  -------   |
+|   content script    |  只能访问 extension、runtime等部分API            |  可以访问	     |  不可以       |  不可以    |
+|   popup js          |  可访问绝大部分API，除了devtools系列              |  不可直接访问	  |  不可以       |  可以      |
+|   background js     |  可访问绝大部分API，除了devtools系列              |  不可直接访问	  |  不可以       |  直接跨域  |
+|   devtools js       |  只能访问 devtools、extension、runtime等部分API  |  可以	         |  可以         |  不可以    |
+
+## 消息通信
+
+|         JS种类       |  content-script                                   |  popup.js	     |  background.js   |
+|   ------            |  ----------                                    |  -----------      |  ----------  |
+|   content script    |  -            |  chrome.runtime.sendMessage、chrome.runtime.connect	     |  chrome.runtime.sendMessage 、chrome.runtime.connect       |
+|   popup.js          |  chrome.tabs.sendMessage 、 chrome.tabs.connect             |  -	  |  chrome.extension. getBackgroundPage()       |
+|   background.js     |  chrome.tabs.sendMessage chrome.tabs.connect              |  chrome.extension.getViews	  |  -       |
+|   devtools.js       |  -  |  chrome.runtime.sendMessage	         |  chrome.runtime.sendMessage         |
+
+
+##  chrome.* API 
+
+Chrome 浏览器为扩展程序提供了许多专用 API，例如 chrome.runtime 与 chrome.alarms。
+参考[文档](https://crxdoc-zh.appspot.com/extensions/api_index)
 
 ## 参考
 [官方文档](https://developer.chrome.com/extensions/getstarted)
